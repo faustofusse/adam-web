@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 
 router.get('/login', (req, res, next) => {
   req.logout();
-  res.render('login', { title: "ADAM - Iniciar Sesion"});
+  res.render('login', { layout: 'login', title: 'Login' });
 });
 
 router.post('/login',

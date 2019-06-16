@@ -11,30 +11,30 @@ router.get('/usuarios', (req, res) => {
 });
 
 // Registrar un usuario
-router.post('/usuario', (req, res) => {
-    var nombre = req.body.name,
-        apellido = req.body.lastName,
-        correo = req.body.email,
+router.post('/usuario', (req, res, next) => {
+    var name = req.body.name,
+        lastName = req.body.lastName,
+        email = req.body.email,
         password = req.body.password;
     req.checkBody('email', 'El correo electronico no es valido').isEmail();
     req.checkBody('repeatPassword', 'Las contrasenas no coinciden').equals(password);
     if (req.validationErrors()) {
-        res.send({ errors: errors });
-        next();
-    }
-    var newUser = new User({ nombre, apellido, correo, password });
-    User.findOne({ correo: correo }, function (err, user) {
-        if (err) throw err;
-        if (user && user.password) {
-            res.send({ errors: ['El usuario ya existe'] });
-            next();
-        }
-        User.createUser(newUser, function (err, user) {
+        res.send({ errors: req.validationErrors() });
+    } else {
+        var newUser = new User({ name, lastName, email, password });
+        User.findOne({ email: email }, function (err, user) {
             if (err) throw err;
-            console.log('Usuario creado: ' + user);
-            res.send({ msj: 'Usuario creado correctamente' });
+            if (user && user.password) {
+                res.send({ errors: ['El usuario ya existe'] });
+            } else {
+                User.createUser(newUser, function (err, user) {
+                    if (err) throw err;
+                    console.log('Usuario creado: ' + user);
+                    res.send({ msj: 'Usuario creado correctamente' });
+                });
+            }
         });
-    });
+    }
 });
 
 // Actualizar password de un usuario
