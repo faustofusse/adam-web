@@ -25,12 +25,12 @@ router.post('/usuario', (req, res, next) => {
         User.findOne({ email: email }, function (err, user) {
             if (err) throw err;
             if (user && user.password) {
-                res.send({ errors: ['El usuario ya existe'] });
+                res.send({ errors: [{ param: 'email', msg: 'El usuario ya existe' }] });
             } else {
                 User.createUser(newUser, function (err, user) {
                     if (err) throw err;
                     console.log('Usuario creado: ' + user);
-                    res.send({ msj: 'Usuario creado correctamente' });
+                    res.send({ msg: 'Usuario creado correctamente' });
                 });
             }
         });
@@ -39,7 +39,15 @@ router.post('/usuario', (req, res, next) => {
 
 // Actualizar password de un usuario
 router.put('/password', (req, res) => {
-
+    let password = req.body.password;
+    req.checkBody('repeatPassword', 'Las contrasenas no coinciden').equals(password);
+    if (req.validationErrors()) {
+        res.send({ errors: req.validationErrors() });
+    } else {
+        User.updatePassword(req.body._id, password, (err, user) => {
+            res.send({ msg: 'Contrasena actualizada' });
+        });
+    }
 });
 
 // Actualizar el contenido
