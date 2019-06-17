@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>{{title}}</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <nav><h1>ADAM</h1></nav>
+<head>
+  <title>{{title}}</title>
+  <link rel='stylesheet' href='/stylesheets/main.css' />
+</head>
+<body>
+  <nav>
+    <h1>ADAM</h1>
+    <a href="/logout">Cerrar sesion</a>
+  </nav>
+  <div>
     <div class="navigation">
       <ul>
         <li><a href="/contenido">Contenido</a></li>
+        <li><a href="/videos">Videos</a></li>
+        <li><a href="/imagenes">Imagenes</a></li>
         <li><a href="/registro">Registrar Usuario</a></li>
         <li><a href="/configuracion">Configuracion</a></li>
-        <li><a href="/logout">Cerrar sesion</a></li>
       </ul>
     </div>
-    {{{body}}}
-  </body>
+    <div class="contenido">
+      {{{body}}}
+    </div>
+  </div>
+  <script src="/javascripts/jquery-3.3.1.min.js"></script>
+  <script src="/javascripts/script.js"></script>
+</body>
 </html>

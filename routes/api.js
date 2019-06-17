@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/user');
+var Mail = require('../utils/mail');
 
 // Listado de usuarios
 router.get('/usuarios', (req, res) => {
@@ -16,6 +17,7 @@ router.post('/usuario', (req, res, next) => {
         lastName = req.body.lastName,
         email = req.body.email,
         password = req.body.password;
+    // req.checkBody(['name', 'lastName', 'email', 'password', 'repeatPassword'], 'Completa todos los campos').notEmpty();
     req.checkBody('email', 'El correo electronico no es valido').isEmail();
     req.checkBody('repeatPassword', 'Las contrasenas no coinciden').equals(password);
     if (req.validationErrors()) {
@@ -31,24 +33,48 @@ router.post('/usuario', (req, res, next) => {
                     if (err) throw err;
                     console.log('Usuario creado: ' + user);
                     res.send({ msg: 'Usuario creado correctamente' });
+                    Mail.sendToNuevoUsuario(newUser, '12983713hunkwejs', (err, info)=>{
+                        if (err) console.error(err);
+                        console.log('Mail enviado');
+                        console.log(info);
+                    })
                 });
             }
         });
     }
 });
 
-// Actualizar password de un usuario
-router.put('/password', (req, res) => {
-    let password = req.body.password;
-    req.checkBody('repeatPassword', 'Las contrasenas no coinciden').equals(password);
-    if (req.validationErrors()) {
+router.put('/usuario', (req, res) => {
+    let user = req.body;
+    let id = req.user ? req.user._id : user._id;
+    if (req.body.email) req.checkBody('email', 'El correo electronico no es valido').isEmail();
+    if (user.password !== undefined || user.repeatPassword !== undefined)
+        req.checkBody('repeatPassword', 'Las contrasenas no coinciden').equals(user.password);
+    else
+        delete user.password;
+    // delete user.repeatPassword;
+    console.log(user);
+    if (req.validationErrors())
         res.send({ errors: req.validationErrors() });
-    } else {
-        User.updatePassword(req.body._id, password, (err, user) => {
-            res.send({ msg: 'Contrasena actualizada' });
+    else
+        User.updateUser(id, user, (err, user) => {
+            if (err) throw err;
+            res.send({ msg: 'Usuario actualizado correctamente' });
         });
-    }
 });
+
+// Actualizar password de un usuario
+// router.put('/password', (req, res) => {
+//     let password = req.body.password;
+//     req.checkBody('repeatPassword', 'Las contrasenas no coinciden').equals(password);
+//     if (req.validationErrors()) {
+//         res.send({ errors: req.validationErrors() });
+//     } else {
+//         User.updatePassword(req.body._id, password, (err, user) => {
+//             res.send({ msg: 'Contrasena actualizada' });
+//         });
+//     }
+// });
 
 // Actualizar el contenido
 router.post('/contenido', (req, res) => {

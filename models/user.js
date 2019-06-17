@@ -21,8 +21,21 @@ module.exports.createUser = function (newUser, callback) {
     });
 };
 
-module.exports.getUserByEmail = function (correo, callback) {
-    var query = { correo: correo };
+module.exports.updateUser = function (id, user, callback) {
+    if (user.password)
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                console.log('se actualiza la contra bolu');
+                user.password = hash;
+                User.findOneAndUpdate({ _id: id }, user, callback);
+            });
+        });
+    else
+        User.findOneAndUpdate({ _id: id }, user, callback);
+}
+
+module.exports.getUserByEmail = function (email, callback) {
+    var query = { email };
     User.findOne(query, callback);
 };
 
@@ -30,13 +43,13 @@ module.exports.getUserById = function (id, callback) {
     User.findById(id, callback);
 };
 
-module.exports.updatePassword = (id, password, callback) => {
-    bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(password, salt, (err, hash) => {
-            User.findOneAndUpdate({ _id: id }, { password: hash }, callback);
-        });
-    });
-}
+// module.exports.updatePassword = (id, password, callback) => {
+//     bcrypt.genSalt(10, (err, salt) => {
+//         bcrypt.hash(password, salt, (err, hash) => {
+//             User.findOneAndUpdate({ _id: id }, { password: hash }, callback);
+//         });
+//     });
+// }
 
 module.exports.comparePassword = function (candidatePassword, hash, callback) {
     bcrypt.compare(candidatePassword, hash, function (err, isMatch) {

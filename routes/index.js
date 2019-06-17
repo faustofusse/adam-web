@@ -17,22 +17,39 @@ router.post('/login',
     res.redirect('/');
   });
 
-router.get('/contenido', (req, res, next) => {
+router.get('/videos', ensureAuthenticated, (req, res) => {
+  res.render('videos', { title: 'Videos' });
+});
+
+router.get('/imagenes', ensureAuthenticated, (req, res) => {
+  res.render('imagenes', { title: 'Imagenes' });
+});
+
+router.get('/contenido', ensureAuthenticated, (req, res, next) => {
   res.render('contenido', { title: 'Contenido' });
 });
 
-router.get('/configuracion', (req, res, next) => {
+router.get('/configuracion', ensureAuthenticated, (req, res, next) => {
   res.render('config', { title: 'Configuracion', registro: false });
 });
 
-router.get('/registro', (req, res, next) => {
+router.get('/registro', ensureAuthenticated, (req, res, next) => {
   res.render('config', { title: 'Registro', registro: true });
 });
 
 router.get('/logout', (req, res) => {
   req.logout();
-  req.flash('success_msg', 'Has cerrado la sesion.');
+  // req.flash('success_msg', 'Has cerrado la sesion.');
   res.redirect('/login');
 });
+
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  } else {
+    //req.flash('error_msg', 'No has iniciado sesion');
+    res.redirect(302, '/login');
+  }
+}
 
 module.exports = router;

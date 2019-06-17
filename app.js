@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var expressValidator = require('express-validator');
 var flash = require('connect-flash');
 var session = require('express-session');
+var logger = require('morgan');
 
 var passport = require('passport');
 var passportSetup = require('./config/passport');
@@ -22,7 +23,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
 // middlewares
-// app.use(logger('dev'));
+app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
