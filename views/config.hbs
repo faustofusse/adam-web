@@ -1,14 +1,16 @@
-{{#if registro}}
-    <h2>Registrar un usuario</h2>
-{{else}}
+{{#if config}}
     <h2>Configuracion del usuario</h2>
+{{else}}
+    <h2>Registrar un usuario</h2>
 {{/if}}
 
 <form action="#" method="#">
     <input type="text" id="name" placeholder="Nombre" value="{{user.name}}">
     <input type="text" id="lastName" placeholder="Apellido" value="{{user.lastName}}">
     <input type="email" id="email" placeholder="Correo electronico" value="{{user.email}}">
-    <input type="password" id="password" placeholder="Contraseña">
-    <input type="password" id="repeatPassword" placeholder="Repetir contraseña">
+    {{#if config}}
+        <input type="password" id="password" placeholder="Contraseña">
+        <input type="password" id="repeatPassword" placeholder="Repetir contraseña">
+    {{/if}}
     <input type="submit" value="Aceptar">
 </form>

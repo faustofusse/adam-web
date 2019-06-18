@@ -30,11 +30,11 @@ router.get('/contenido', ensureAuthenticated, (req, res, next) => {
 });
 
 router.get('/configuracion', ensureAuthenticated, (req, res, next) => {
-  res.render('config', { title: 'Configuracion', registro: false });
+  res.render('config', { title: 'Configuracion', config: true });
 });
 
 router.get('/registro', ensureAuthenticated, (req, res, next) => {
-  res.render('config', { title: 'Registro', registro: true });
+  res.render('config', { title: 'Registro', config: false });
 });
 
 router.get('/logout', (req, res) => {

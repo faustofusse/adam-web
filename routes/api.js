@@ -19,25 +19,27 @@ router.post('/usuario', (req, res, next) => {
         password = req.body.password;
     // req.checkBody(['name', 'lastName', 'email', 'password', 'repeatPassword'], 'Completa todos los campos').notEmpty();
     req.checkBody('email', 'El correo electronico no es valido').isEmail();
-    req.checkBody('repeatPassword', 'Las contrasenas no coinciden').equals(password);
+    if (password) req.checkBody('repeatPassword', 'Las contrasenas no coinciden').equals(password);
+    else password = crearPassword(10);
+    console.log(password);
     if (req.validationErrors()) {
         res.send({ errors: req.validationErrors() });
     } else {
         var newUser = new User({ name, lastName, email, password });
         User.findOne({ email: email }, function (err, user) {
             if (err) throw err;
-            if (user && user.password) {
+            if (user) {
                 res.send({ errors: [{ param: 'email', msg: 'El usuario ya existe' }] });
             } else {
                 User.createUser(newUser, function (err, user) {
                     if (err) throw err;
                     console.log('Usuario creado: ' + user);
                     res.send({ msg: 'Usuario creado correctamente' });
-                    Mail.sendToNuevoUsuario(newUser, '12983713hunkwejs', (err, info)=>{
+                    /*Mail.sendToNuevoUsuario(newUser, password, (err, info)=>{
                         if (err) console.error(err);
                         console.log('Mail enviado');
                         console.log(info);
-                    })
+                    })*/
                 });
             }
         });
@@ -95,5 +97,16 @@ router.post('/imagen', (req, res) => {
 router.post('/video', (req, res) => {
 
 });
+
+// Crear password aleatoria
+function crearPassword(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+ }
 
 module.exports = router;
