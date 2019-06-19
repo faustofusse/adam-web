@@ -35,11 +35,10 @@ router.post('/usuario', (req, res, next) => {
                     if (err) throw err;
                     console.log('Usuario creado: ' + user);
                     res.send({ msg: 'Usuario creado correctamente' });
-                    /*Mail.sendToNuevoUsuario(newUser, password, (err, info)=>{
-                        if (err) console.error(err);
-                        console.log('Mail enviado');
-                        console.log(info);
-                    })*/
+                    Mail.sendToNuevoUsuario(newUser, password, (err, info)=>{
+                        if (err) console.log(err)
+                        else console.log('Mail enviado a ' + newUser.email);
+                    });
                 });
             }
         });
