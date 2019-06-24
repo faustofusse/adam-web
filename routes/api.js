@@ -1,7 +1,47 @@
 var express = require('express');
 var router = express.Router();
-var User = require('../models/user');
 var Mail = require('../utils/mail');
+var User = require('../models/user');
+var db = require('../config/database');
+var gfs = db.gfs;
+
+// ------- MULTER ---------
+
+var multer = require('multer');
+var storage = db.storage;
+var upload = multer({ storage });
+
+// -------- ROUTES ---------
+
+// Subir archivo
+router.post('/archivo', upload.single('file'), (req, res) => {
+    let data = {
+        description: req.body.description,
+        keywords: req.body.keywords,
+        file: req.file
+    }
+    console.log(req.body);
+    res.send(data);
+});
+
+// Listado de archivos
+router.get('/archivos', (req, res) => {
+    gfs.files.find().toArray((err, files) => {
+        if (err) throw err;
+        if (!files || files.length === 0)
+            return res.send({ msg: 'No hay archivos guardados.' });
+        else
+            return res.send({ files });
+    });
+});
+
+// Subir imagen
+router.post('/imagen', upload.single('image'), (req, res) => {
+    console.log(req.body.description);
+    console.log(req.body.keywords);
+    console.log(req.file);
+    res.send({ msg: 'OK' });
+});
 
 // Listado de usuarios
 router.get('/usuarios', (req, res) => {
@@ -35,7 +75,7 @@ router.post('/usuario', (req, res, next) => {
                     if (err) throw err;
                     console.log('Usuario creado: ' + user);
                     res.send({ msg: 'Usuario creado correctamente' });
-                    Mail.sendToNuevoUsuario(newUser, password, (err, info)=>{
+                    Mail.sendToNuevoUsuario(newUser, password, (err, info) => {
                         if (err) console.log(err)
                         else console.log('Mail enviado a ' + newUser.email);
                     });
@@ -64,48 +104,15 @@ router.put('/usuario', (req, res) => {
         });
 });
 
-// Actualizar password de un usuario
-// router.put('/password', (req, res) => {
-//     let password = req.body.password;
-//     req.checkBody('repeatPassword', 'Las contrasenas no coinciden').equals(password);
-//     if (req.validationErrors()) {
-//         res.send({ errors: req.validationErrors() });
-//     } else {
-//         User.updatePassword(req.body._id, password, (err, user) => {
-//             res.send({ msg: 'Contrasena actualizada' });
-//         });
-//     }
-// });
-
-// Actualizar el contenido
-router.post('/contenido', (req, res) => {
-
-});
-
-// Obtener el contenido
-router.get('/contenido', (req, res) => {
-
-});
-
-// Subir imagen
-router.post('/imagen', (req, res) => {
-
-});
-
-// Subir video
-router.post('/video', (req, res) => {
-
-});
-
 // Crear password aleatoria
 function crearPassword(length) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
- }
+}
 
 module.exports = router;

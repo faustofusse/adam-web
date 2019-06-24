@@ -7,6 +7,7 @@ var expressValidator = require('express-validator');
 var flash = require('connect-flash');
 var session = require('express-session');
 var logger = require('morgan');
+var methodOverride = require('method-override');
 
 var passport = require('passport');
 var passportSetup = require('./config/passport');
@@ -24,6 +25,7 @@ app.set('view engine', 'hbs');
 
 // middlewares
 app.use(logger('dev'));
+app.use(methodOverride('_method'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
