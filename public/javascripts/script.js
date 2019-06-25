@@ -7,7 +7,21 @@ if (pathname === '/registro') $('input[type=\'text\'], input[type=\'email\']').v
 
 // ------------------------- HOLA
 
-$('p').load('/api/documentos/5d1198c51e85241a66382069');
+$.get('/api/documentos/5d1198c51e85241a66382069', (data, status) => {
+    // $('p').html(decodeURIComponent(escape(data)));
+    $('p').html(data);
+    $('h2').html(decode_utf8(data));
+});
+
+function encode_utf8(s) {
+    return unescape(encodeURIComponent(s));
+}
+
+function decode_utf8(s) {
+    return decodeURIComponent(escape(s));
+}
+
+// $('p').load('/api/documentos/5d1198c51e85241a66382069');
 
 // ------------------------- EVENTOS
 
