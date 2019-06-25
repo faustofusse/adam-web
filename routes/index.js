@@ -1,6 +1,9 @@
-var express = require('express');
-var passport = require('passport');
-var router = express.Router();
+const express = require('express');
+const passport = require('passport');
+const router = express.Router();
+const Image = require('../models/image');
+const Video = require('../models/video');
+const File = require('../models/file');
 
 router.get('/', (req, res) => {
   res.redirect('/contenido');
@@ -18,11 +21,19 @@ router.post('/login',
   });
 
 router.get('/videos', ensureAuthenticated, (req, res) => {
-  res.render('videos', { title: 'Videos' });
+  Video.find((err, videos) => {
+    if (err) throw err;
+    if (videos)
+      res.render('videos', { title: 'Videos', videos });
+  });
 });
 
 router.get('/imagenes', ensureAuthenticated, (req, res) => {
-  res.render('imagenes', { title: 'Imagenes' });
+  Image.find((err, images) => {
+    if (err) throw err;
+    if (images)
+      res.render('imagenes', { title: 'Imagenes', images });
+  });
 });
 
 router.get('/contenido', ensureAuthenticated, (req, res, next) => {

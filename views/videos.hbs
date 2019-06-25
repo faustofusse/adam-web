@@ -1,1 +1,17 @@
 <h2>Videos vieja</h2>
+<form id="archivo" action="/api/archivos" method="POST" enctype="multipart/form-data">
+    <label for="file">Archivo: </label>
+    <input type="file" name="file" id="file">
+    <input type="text" name="description" placeholder="Descripcion">
+    <input type="text" name="keywords" placeholder="Palabras clave">
+    <input type="submit" value="Aceptar">
+</form>
+<div class="items">
+    {{#if videos}}
+        {{#each videos}}
+            <div class="video">
+                <video src="/api/videos/{{fileId}}" alt="{{description}}">
+            </div>
+        {{/each}}
+    {{/if}}
+</div>

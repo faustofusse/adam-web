@@ -51,6 +51,20 @@ router.get('/imagenes', (req, res) => {
         });
 });
 
+// Mostrar video (readStream de GridFS)
+router.get('/videos/:id', (req, res) => {
+    const _id = new ObjectID(req.params.id);
+    const gfs = new mongodb.GridFSBucket(dbConfig.mongoose.connection.db, { bucketName: 'uploads' });
+    dbConfig.mongoose.connection.db.collection(filesCollection + '.files').findOne({ _id }, (err, video) => {
+        if (err) throw err;
+        if (!video || video.contentType !== 'video/mp4')
+            return res.send({ msg: 'No existe un video con ese id.' });
+        // Stremear la imagen:
+        const downloadStream = gfs.openDownloadStream(_id);
+        downloadStream.pipe(res);
+    });
+});
+
 // Mostrar imagen (readStream de GridFS)
 router.get('/imagenes/:id', (req, res) => {
     const _id = new ObjectID(req.params.id);

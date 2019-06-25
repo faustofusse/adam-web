@@ -6,4 +6,12 @@
     <input type="text" name="keywords" placeholder="Palabras clave">
     <input type="submit" value="Aceptar">
 </form>
-<img src="/api/imagenes/5d0e8275322fd40fb84be07b" alt="Imagen bro">
+<div class="items">
+    {{#if images}}
+        {{#each images}}
+            <div class="imagen">
+                <img src="/api/imagenes/{{fileId}}" alt="{{description}}">
+            </div>
+        {{/each}}
+    {{/if}}
+</div>
