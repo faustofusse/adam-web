@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var FileSchema = mongoose.Schema({
     name: { type: String },
+    type: { type: String },
     fileId: { type: String }
     // fileId: { type: mongoose.Schema.Types.ObjectId }
 });

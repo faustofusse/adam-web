@@ -7,8 +7,7 @@ if (pathname === '/registro') $('input[type=\'text\'], input[type=\'email\']').v
 
 // ------------------------- HOLA
 
-
-
+$('p').load('/api/documentos/5d1198c51e85241a66382069');
 
 // ------------------------- EVENTOS
 

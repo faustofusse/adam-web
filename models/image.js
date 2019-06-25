@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var ImageSchema = mongoose.Schema({
     description: { type: String },
     keywords: [{ type: String }],
+    type: { type: String },
     fileId: { type: String }
     // fileId: { type: mongoose.Schema.Types.ObjectId }
 });

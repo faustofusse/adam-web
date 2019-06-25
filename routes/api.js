@@ -1,18 +1,20 @@
 const express = require('express');
+const router = express.Router();
+
 const mongodb = require('mongodb');
 const ObjectID = require('mongodb').ObjectID;
-const router = express.Router();
-const Mail = require('../utils/mail');
-const User = require('../models/user');
 const dbConfig = require('../config/database');
-const crypto = require('crypto');
-const path = require('path');
-const multer = require('multer');
-const GridFsStorage = require('multer-gridfs-storage');
-
+const User = require('../models/user');
 const Video = require('../models/video');
 const Image = require('../models/image');
 const File = require('../models/file');
+
+const Mail = require('../utils/mail');
+const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
+const multer = require('multer');
+const GridFsStorage = require('multer-gridfs-storage');
 
 // ------- MULTER ---------
 
@@ -49,6 +51,20 @@ router.get('/imagenes', (req, res) => {
                 return res.send({ msg: 'No hay imagenes guardadas.' });
             res.send({ imagenes });
         });
+});
+
+// Archivo de texto
+router.get('/documentos/:id', (req, res) => {
+    const _id = new ObjectID(req.params.id);
+    const gfs = new mongodb.GridFSBucket(dbConfig.mongoose.connection.db, { bucketName: 'uploads' });
+    dbConfig.mongoose.connection.db.collection(filesCollection + '.files').findOne({ _id }, (err, video) => {
+        if (err) throw err;
+        if (!video || video.contentType !== 'text/plain')
+            return res.send({ msg: 'No existe un archivo de texto plano con ese id.' });
+        // Stremear el texto:
+        const downloadStream = gfs.openDownloadStream(_id);
+        downloadStream.pipe(res);
+    });
 });
 
 // Mostrar video (readStream de GridFS)
@@ -89,7 +105,12 @@ router.post('/archivos', upload.single('file'), (req, res) => {
         type = file.contentType;
     let callback = (err, file) => {
         if (err) throw err;
-        res.send({ msg: 'Archivo subido correctamente.' });
+        // --------------------------------------------------
+        // --------------------------------------------------
+        // CAMBIAR ESTO ("COMO VA A HABER UN REDIRECT EN UNA API???????!!???!?!?!") ya fue
+        // --------------------------------------------------
+        // --------------------------------------------------
+        res.redirect('/contenido');
     }
     if (type === 'image/png' || type === 'image/jpg' || type === 'image/jpeg')
         Image.createImage({ description, keywords, fileId, type }, callback);
