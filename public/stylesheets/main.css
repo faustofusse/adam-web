@@ -58,4 +58,35 @@ div.navigation {
 
 div.contenido {
   width: 85%;
+  padding: 1em 2em;
+
+}
+
+div.upload {
+  border: 3px solid black;
+  padding: 1em;
+}
+
+div.items {
+  display: flex;
+  justify-content: space-between;
+}
+
+div.items > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 27%;
+  padding: 1em;
+  background-color: #0399e5;
+  cursor: pointer;
+  margin-top: 1em;
+}
+
+img {
+  width: 100%;
+}
+
+video {
+  width: 100%;
 }

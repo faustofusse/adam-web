@@ -1,12 +1,21 @@
-<h2>Imagenes vieja</h2>
-<form id="archivo" action="/api/archivos" method="POST" enctype="multipart/form-data">
-    <label for="file">Archivo: </label>
-    <input type="file" name="file" id="file">
-    <input type="text" name="description" placeholder="Descripcion">
-    <input type="text" name="keywords" placeholder="Palabras clave">
-    <input type="submit" value="Aceptar">
-</form>
+<h2>{{title}}</h2>
+<div class="upload">
+    <form id="archivo" action="/api/archivos" method="POST" enctype="multipart/form-data">
+        <label for="file">Archivo: </label>
+        <input type="file" name="file" id="file">
+        <input type="text" name="description" placeholder="Descripcion">
+        <input type="text" name="keywords" placeholder="Palabras clave">
+        <input type="submit" value="Aceptar">
+    </form>
+</div>
 <div class="items">
+    {{#if videos}}
+        {{#each videos}}
+            <div class="video">
+                <video src="/api/videos/{{fileId}}" alt="{{description}}">
+            </div>
+        {{/each}}
+    {{/if}}
     {{#if images}}
         {{#each images}}
             <div class="imagen">

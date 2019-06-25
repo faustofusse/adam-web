@@ -24,7 +24,7 @@ router.get('/videos', ensureAuthenticated, (req, res) => {
   Video.find((err, videos) => {
     if (err) throw err;
     if (videos)
-      res.render('videos', { title: 'Videos', videos });
+      res.render('imagenes', { title: 'Videos', videos });
   });
 });
 
