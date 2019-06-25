@@ -1,6 +1,9 @@
 <h2>Imagenes vieja</h2>
-<form action="/api/archivo" method="POST" enctype="multipart/form-data">
+<form id="archivo" action="/api/archivos" method="POST" enctype="multipart/form-data">
     <label for="file">Archivo: </label>
     <input type="file" name="file" id="file">
+    <input type="text" name="description" placeholder="Descripcion">
+    <input type="text" name="keywords" placeholder="Palabras clave">
     <input type="submit" value="Aceptar">
 </form>
+<img src="/api/imagenes/5d0e8275322fd40fb84be07b" alt="Imagen bro">

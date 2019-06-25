@@ -16,6 +16,7 @@ var databaseSetup = require('./config/database');
 
 var indexRouter = require('./routes/index');
 var apiRouter = require('./routes/api');
+// var upload = require('multer')();
 
 var app = express();
 
@@ -26,8 +27,13 @@ app.set('view engine', 'hbs');
 // middlewares
 app.use(logger('dev'));
 app.use(methodOverride('_method'));
+// for parsing application/json
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+// for parsing application/xwww-
+app.use(bodyParser.urlencoded({ extended: true }));
+// for parsing multipart/form-data
+// app.use(upload.array()); 
+// app.use(express.static('public'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

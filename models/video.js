@@ -1,17 +1,17 @@
 var mongoose = require('mongoose');
 
-var ImageSchema = mongoose.Schema({
+var VideoSchema = mongoose.Schema({
     description: { type: String },
     keywords: [{ type: String }],
     fileId: { type: String }
     // fileId: { type: mongoose.Schema.Types.ObjectId }
 });
 
-var Image = module.exports = mongoose.model('Image', ImageSchema);
+var Video = module.exports = mongoose.model('Video', VideoSchema);
 
 // --------------- FUNCTIONS -------------------
 
-module.exports.createImage = function (newImg, callback) {
-    let image = new Image(newImg);
-    image.save(callback);
+module.exports.createVideo = function (newVid, callback) {
+    let video = new Video(newVid);
+    video.save(callback);
 }

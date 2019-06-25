@@ -1,46 +1,99 @@
-var express = require('express');
-var router = express.Router();
-var Mail = require('../utils/mail');
-var User = require('../models/user');
-var db = require('../config/database');
-var gfs = db.gfs;
+const express = require('express');
+const mongodb = require('mongodb');
+const ObjectID = require('mongodb').ObjectID;
+const router = express.Router();
+const Mail = require('../utils/mail');
+const User = require('../models/user');
+const dbConfig = require('../config/database');
+const crypto = require('crypto');
+const path = require('path');
+const multer = require('multer');
+const GridFsStorage = require('multer-gridfs-storage');
+
+const Video = require('../models/video');
+const Image = require('../models/image');
+const File = require('../models/file');
 
 // ------- MULTER ---------
 
-var multer = require('multer');
-var storage = db.storage;
-var upload = multer({ storage });
+const filesCollection = 'uploads';
+const storage = new GridFsStorage({
+    url: dbConfig.uri,
+    file: (req, file) => {
+        return new Promise((resolve, reject) => {
+            crypto.randomBytes(16, (err, buf) => {
+                if (err) return reject(err);
+                const filename = buf.toString('hex') + path.extname(file.originalname);
+                const fileInfo = {
+                    filename,
+                    bucketName: filesCollection
+                };
+                resolve(fileInfo);
+            });
+        });
+    }
+});
+const upload = multer({ storage });
 
 // -------- ROUTES ---------
 
-// Subir archivo
-router.post('/archivo', upload.single('file'), (req, res) => {
-    let data = {
-        description: req.body.description,
-        keywords: req.body.keywords,
-        file: req.file
+// Listado de imagenes
+router.get('/imagenes', (req, res) => {
+    dbConfig.mongoose.connection.db.collection(filesCollection + '.files')
+        .find().toArray((err, files) => {
+            if (err) throw err;
+            if (!files || files.length === 0)
+                return res.send({ msg: 'No hay imagenes guardadas.' });
+            let imagenes = files.filter(val => (val.contentType === 'image/png' || val.contentType === 'image/jpg' || val.contentType === 'image/jpeg'))
+            if (imagenes.length === 0)
+                return res.send({ msg: 'No hay imagenes guardadas.' });
+            res.send({ imagenes });
+        });
+});
+
+// Mostrar imagen (readStream de GridFS)
+router.get('/imagenes/:id', (req, res) => {
+    const _id = new ObjectID(req.params.id);
+    const gfs = new mongodb.GridFSBucket(dbConfig.mongoose.connection.db, { bucketName: 'uploads' });
+    dbConfig.mongoose.connection.db.collection(filesCollection + '.files').findOne({ _id }, (err, imagen) => {
+        if (err) throw err;
+        if (!imagen || (imagen.contentType !== 'image/jpg' && imagen.contentType !== 'image/jpeg' && imagen.contentType !== 'image/png'))
+            return res.send({ msg: 'No existe una imagen con ese id.' });
+        // Stremear la imagen:
+        const downloadStream = gfs.openDownloadStream(_id);
+        downloadStream.pipe(res);
+    });
+});
+
+// Subir archivo  
+router.post('/archivos', upload.single('file'), (req, res) => {
+    let description = req.body.description,
+        keywords = req.body.keywords,
+        file = req.file,
+        fileId = file.id,
+        name = file.originalname,
+        type = file.contentType;
+    let callback = (err, file) => {
+        if (err) throw err;
+        res.send({ msg: 'Archivo subido correctamente.' });
     }
-    console.log(req.body);
-    res.send(data);
+    if (type === 'image/png' || type === 'image/jpg' || type === 'image/jpeg')
+        Image.createImage({ description, keywords, fileId, type }, callback);
+    else if (type === 'video/mp4')
+        Video.createVideo({ description, keywords, fileId, type }, callback);
+    else
+        File.createFile({ fileId, name, type }, callback);
 });
 
 // Listado de archivos
 router.get('/archivos', (req, res) => {
-    gfs.files.find().toArray((err, files) => {
+    dbConfig.mongoose.connection.db.collection(filesCollection + '.files').find().toArray((err, files) => {
         if (err) throw err;
         if (!files || files.length === 0)
             return res.send({ msg: 'No hay archivos guardados.' });
         else
             return res.send({ files });
     });
-});
-
-// Subir imagen
-router.post('/imagen', upload.single('image'), (req, res) => {
-    console.log(req.body.description);
-    console.log(req.body.keywords);
-    console.log(req.file);
-    res.send({ msg: 'OK' });
 });
 
 // Listado de usuarios
@@ -52,7 +105,7 @@ router.get('/usuarios', (req, res) => {
 });
 
 // Registrar un usuario
-router.post('/usuario', (req, res, next) => {
+router.post('/usuarios', (req, res, next) => {
     var name = req.body.name,
         lastName = req.body.lastName,
         email = req.body.email,
@@ -85,7 +138,8 @@ router.post('/usuario', (req, res, next) => {
     }
 });
 
-router.put('/usuario', (req, res) => {
+// Editar un usuario
+router.put('/usuarios', (req, res) => {
     let user = req.body;
     let id = req.user ? req.user._id : user._id;
     if (req.body.email) req.checkBody('email', 'El correo electronico no es valido').isEmail();
@@ -116,3 +170,4 @@ function crearPassword(length) {
 }
 
 module.exports = router;
+module.exports.upload = upload;
