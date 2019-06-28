@@ -11,7 +11,6 @@ const File = require('../models/file');
 
 const Mail = require('../utils/mail');
 const crypto = require('crypto');
-const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const GridFsStorage = require('multer-gridfs-storage');
@@ -105,12 +104,8 @@ router.post('/archivos', upload.single('file'), (req, res) => {
         type = file.contentType;
     let callback = (err, file) => {
         if (err) throw err;
-        // --------------------------------------------------
-        // --------------------------------------------------
-        // CAMBIAR ESTO ("COMO VA A HABER UN REDIRECT EN UNA API???????!!???!?!?!") ya fue
-        // --------------------------------------------------
-        // --------------------------------------------------
-        res.redirect('/contenido');
+        res.send({ msg: 'Archivo subido correctamente.' });
+        console.log(file);
     }
     if (type === 'image/png' || type === 'image/jpg' || type === 'image/jpeg')
         Image.createImage({ description, keywords, fileId, type }, callback);

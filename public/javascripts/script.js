@@ -10,7 +10,6 @@ if (pathname === '/registro') $('input[type=\'text\'], input[type=\'email\']').v
 $.get('/api/documentos/5d1198c51e85241a66382069', (data, status) => {
     // $('p').html(decodeURIComponent(escape(data)));
     $('p').html(data);
-    $('h2').html(decode_utf8(data));
 });
 
 function encode_utf8(s) {
@@ -45,26 +44,24 @@ $('form#usuario').submit((e) => {
         });
 });
 
-// $('form#archivo').submit((e) => {
-//     e.preventDefault();
-//     var formData = new FormData();
-//     formData.append('description', 'Imagen de la puta madre');
-//     formData.append('keywords', ['Hola', 'Homass2', 'sadasd', 'asdjksdn']);
-//     formData.append('file', $('input#file').val())
-//     console.log('Loading....');
-//     $.ajax({
-//         url: '/api/archivos',
-//         data: formData,
-//         processData: false,
-//         contentType: false,
-//         type: 'POST'
-//     }).fail((err) => console.error(err))
-//         .done((response) => {
-//             console.log(response);
-//             console.log('File uploaded.');
-//             if (response.errors) handleErrors(response.errors);
-//         });;
-// });
+$('form#archivo').submit((e) => {
+    e.preventDefault();
+    let form = document.getElementById("archivo");
+    let formdata = new FormData(form);
+    console.log('Loading....');
+    $.ajax({
+        url: '/api/archivos',
+        data: formdata,
+        processData: false,
+        contentType: false,
+        type: 'POST'
+    }).fail((err) => console.error(err))
+        .done((response) => {
+            console.log(response);
+            console.log('File uploaded.');
+            if (response.errors) handleErrors(response.errors);
+        });;
+});
 
 function handleErrors(errors) {
     alert(errors);
