@@ -11,8 +11,9 @@ $(document).find('button#eliminar').click(eliminarItem);
 
 $('div.archivo').each((index, element) => {
     let id = $(element).attr('id');
+    let url = '/api/documentos/' + id;
     $(element).find('p').load('/api/documentos/' + id);
-    $(element).find('button#slide').click(slideFile)
+    $(element).find('button#slide').click(slideFile);
 });
 
 // ------------------------- EVENTOS
@@ -29,7 +30,8 @@ $('form#usuario').submit((e) => {
         password: $('input#password').val(),
         repeatPassword: $('input#repeatPassword').val()
     };
-    for (d in data) if (data[d] === '') delete data[d];
+    for (d in data)
+        if (data[d] === '') delete data[d];
     console.log(data);
     let method = pathname === '/registro' ? 'POST' : 'PUT';
     $.ajax({ url: '/api/usuarios', method, data })
@@ -47,12 +49,12 @@ $('form#archivo').submit((e) => {
     console.log('Loading....');
     upload_div_visibility(false);
     $.ajax({
-        url: '/api/archivos',
-        data: formdata,
-        processData: false,
-        contentType: false,
-        type: 'POST'
-    }).fail((err) => console.error(err))
+            url: '/api/archivos',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            type: 'POST'
+        }).fail((err) => console.error(err))
         .done((response) => {
             console.log(response);
             console.log('File uploaded.');
@@ -80,9 +82,9 @@ function eliminarItem(e) {
         parent = parent.parent();
     let id = parent.attr('id');
     $.ajax({
-        url: '/api/archivos/' + id,
-        type: 'DELETE'
-    }).fail((err) => console.error(err))
+            url: '/api/archivos/' + id,
+            type: 'DELETE'
+        }).fail((err) => console.error(err))
         .done((response) => {
             console.log('File deleted.');
             if (response.errors) return handleErrors(response.errors);

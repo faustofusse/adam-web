@@ -54,12 +54,14 @@ router.get('/imagenes', (req, res) => {
 
 // Archivo de texto
 router.get('/documentos/:id', (req, res) => {
+    let docx = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    let txt = 'text/plain';
     const _id = new ObjectID(req.params.id);
     const gfs = new mongodb.GridFSBucket(dbConfig.mongoose.connection.db, { bucketName: 'uploads' });
-    dbConfig.mongoose.connection.db.collection(filesCollection + '.files').findOne({ _id }, (err, video) => {
+    dbConfig.mongoose.connection.db.collection(filesCollection + '.files').findOne({ _id }, (err, file) => {
         if (err) throw err;
-        if (!video || video.contentType !== 'text/plain')
-            return res.send({ msg: 'No existe un archivo de texto plano con ese id.' });
+        if (!file || (file.contentType !== txt && file.contentType !== docx))
+            return res.send({ msg: 'No existe un archivo de texto con ese id.' });
         // Stremear el texto:
         const downloadStream = gfs.openDownloadStream(_id);
         downloadStream.pipe(res);
@@ -174,12 +176,12 @@ router.post('/usuarios', (req, res, next) => {
         res.send({ errors: req.validationErrors() });
     } else {
         var newUser = new User({ name, lastName, email, password });
-        User.findOne({ email: email }, function (err, user) {
+        User.findOne({ email: email }, function(err, user) {
             if (err) throw err;
             if (user) {
                 res.send({ errors: [{ param: 'email', msg: 'El usuario ya existe' }] });
             } else {
-                User.createUser(newUser, function (err, user) {
+                User.createUser(newUser, function(err, user) {
                     if (err) throw err;
                     console.log('Usuario creado: ' + user);
                     res.send({ msg: 'Usuario creado correctamente' });

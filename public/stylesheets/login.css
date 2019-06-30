@@ -3,33 +3,37 @@
     font-family: 'Raleway', sans-serif;
 }
 
-body, html {
+body,
+html {
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
     width: 100%;
+    background: linear-gradient( rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url(../images/login_fondo.png);
+    background-position: center bottom;
+    background-size: cover;
 }
 
 h1 {
-    text-align: center; 
+    text-align: center;
     padding: .3em;
 }
 
 div.background {
-    z-index: -1;
     top: 0;
     left: -40%;
     position: absolute;
     width: 180%;
     height: 90%;
     background: linear-gradient(180deg, rgba(3, 227, 200, 0.8) 0%, rgba(255, 255, 255, 0) 86.2%), #2444B4;
-    border-bottom-right-radius: 200%; 
-    border-bottom-left-radius: 200%; 
+    border-bottom-right-radius: 200%;
+    border-bottom-left-radius: 200%;
 }
 
 div.container {
+    z-index: 10;
     padding: 2em;
     display: flex;
     flex-direction: column;
@@ -55,10 +59,11 @@ form input {
 
 form input[type="submit"] {
     width: 50%;
-    margin:.5em auto;
+    margin: .5em auto;
     cursor: pointer;
 }
 
-textarea:focus, input:focus{
+textarea:focus,
+input:focus {
     outline: none;
 }
