@@ -115,6 +115,31 @@ router.post('/archivos', upload.single('file'), (req, res) => {
         File.createFile({ fileId, name, type }, callback);
 });
 
+// Eliminar archivo
+router.delete('/archivos/:id', (req, res) => {
+    const _id = new ObjectID(req.params.id);
+    const gfs = new mongodb.GridFSBucket(dbConfig.mongoose.connection.db, { bucketName: 'uploads' });
+    let callback = (err, file) => {
+        if (err) throw err;
+        res.send({ msg: 'Archivo eliminado.' });
+    }
+    dbConfig.mongoose.connection.db.collection(filesCollection + '.files').findOne({ _id }, (err, file) => {
+        if (err) throw err;
+        let type = file.contentType,
+            schema = (type === 'image/png' || type === 'image/jpg' || type === 'image/jpeg') ? Image : (type === 'video/mp4' ? Video : File);
+        console.log(type);
+        gfs.delete(_id, (err) => {
+            if (err) throw err;
+            if (type === 'image/png' || type === 'image/jpg' || type === 'image/jpeg')
+                Image.deleteOne({ fileId: _id }, callback);
+            else if (type === 'video/mp4')
+                Video.deleteOne({ fileId: _id }, callback);
+            else
+                File.deleteOne({ fileId: _id }, callback);
+        });
+    });
+});
+
 // Listado de archivos
 router.get('/archivos', (req, res) => {
     dbConfig.mongoose.connection.db.collection(filesCollection + '.files').find().toArray((err, files) => {

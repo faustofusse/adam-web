@@ -1,28 +1,24 @@
-
+// $(function () {
 // ------------------------- CHECKEAR PATHNAME
 
 let pathname = window.location.pathname;
 $('ul li a[href=\'' + pathname + '\']').addClass('activo');
 if (pathname === '/registro') $('input[type=\'text\'], input[type=\'email\']').val('');
 
-// ------------------------- HOLA
+// ------------------------- INICIO
 
-$.get('/api/documentos/5d1198c51e85241a66382069', (data, status) => {
-    // $('p').html(decodeURIComponent(escape(data)));
-    $('p').html(data);
+$(document).find('button#eliminar').click(eliminarItem);
+
+$('div.archivo').each((index, element) => {
+    let id = $(element).attr('id');
+    $(element).find('p').load('/api/documentos/' + id);
+    $(element).find('button#slide').click(slideFile)
 });
 
-function encode_utf8(s) {
-    return unescape(encodeURIComponent(s));
-}
-
-function decode_utf8(s) {
-    return decodeURIComponent(escape(s));
-}
-
-// $('p').load('/api/documentos/5d1198c51e85241a66382069');
-
 // ------------------------- EVENTOS
+
+$('button#subir-archivo').click(() => upload_div_visibility(true));
+$('div.upload button#cerrar').click(() => upload_div_visibility(false));
 
 $('form#usuario').submit((e) => {
     e.preventDefault();
@@ -49,6 +45,7 @@ $('form#archivo').submit((e) => {
     let form = document.getElementById("archivo");
     let formdata = new FormData(form);
     console.log('Loading....');
+    upload_div_visibility(false);
     $.ajax({
         url: '/api/archivos',
         data: formdata,
@@ -59,10 +56,43 @@ $('form#archivo').submit((e) => {
         .done((response) => {
             console.log(response);
             console.log('File uploaded.');
-            if (response.errors) handleErrors(response.errors);
+            if (response.errors) return handleErrors(response.errors);
+            alert(response.msg);
+            location.reload();
         });;
 });
+
+// ------------------------- FUNCIONES
+
+function slideFile() {
+    $(this).parent().parent().find('div.texto').slideToggle(400);
+}
+
+function upload_div_visibility(toVisible) {
+    $('div.upload-container').css('display', toVisible ? 'flex' : 'none');
+}
+
+function eliminarItem(e) {
+    let eliminar = confirm('Estas seguro de que quieres eliminar este archivo?');
+    if (!eliminar) return;
+    let parent = $(this).parent();
+    if (!parent.attr('class') || parent.attr('class') !== 'imagen')
+        parent = parent.parent();
+    let id = parent.attr('id');
+    $.ajax({
+        url: '/api/archivos/' + id,
+        type: 'DELETE'
+    }).fail((err) => console.error(err))
+        .done((response) => {
+            console.log('File deleted.');
+            if (response.errors) return handleErrors(response.errors);
+            alert(response.msg);
+            console.log(response);
+            location.reload();
+        });;
+}
 
 function handleErrors(errors) {
     alert(errors);
 }
+// });

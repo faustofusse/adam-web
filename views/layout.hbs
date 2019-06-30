@@ -3,29 +3,53 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>{{title}}</title>	
+  <title>{{title}}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <link rel='stylesheet' href='/stylesheets/main.css' />
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/74d407b9d7.js"></script>
 </head>
 
 <body>
-  <nav>
-    <h1>ADAM</h1>
-    <a href="/logout">Cerrar sesion</a>
+  <div class="upload-container">
+    <div class="upload">
+      <div class="navbar">
+        <h3>Subir archivo</h3>
+        <button id="cerrar"><i class="fas fa-times"></i></button>
+      </div>
+      
+      <form id="archivo" action="/api/archivos" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" id="file">
+        <input type="text" name="description" placeholder="Descripcion">
+        <input type="text" name="keywords" placeholder="Palabras clave">
+        <input type="submit" value="Aceptar">
+      </form>
+    </div>
+  </div>
+  <nav class="navbar">
+    <a href="/configuracion">{{user.name}} {{user.lastName}}</a>
   </nav>
-  <div>
-    <div class="navigation">
+  <div class="navigation">
+    <div>
+      <img src="./images/login_logo.svg" alt="Logo de la aplicacion.">
       <ul>
-        <li><a href="/contenido">Contenido</a></li>
-        <li><a href="/videos">Videos</a></li>
-        <li><a href="/imagenes">Imagenes</a></li>
-        <li><a href="/registro">Registrar Usuario</a></li>
-        <li><a href="/configuracion">Configuracion</a></li>
+        <li><a href="/contenido"><i class="fas fa-folder"></i><span>CONTENIDO</span><i
+              class="fas fa-chevron-right"></i></a>
+        </li>
+        <li><a href="/videos"><i class="fas fa-video"></i><span>VIDEOS</span><i class="fas fa-chevron-right"></i></a>
+        </li>
+        <li><a href="/imagenes"><i class="fas fa-images"></i><span>IMAGENES</span><i
+              class="fas fa-chevron-right"></i></a></li>
+        <li><a href="/registro"><i class="fas fa-user-plus"></i><span>REGISTRAR USUARIO</span><i
+              class="fas fa-chevron-right"></i></a></li>
+        <li><a href="/configuracion"><i class="fas fa-cog"></i><span>CONFIGURACION</span><i
+              class="fas fa-chevron-right"></i></a></li>
       </ul>
     </div>
-    <div class="contenido">
-      {{{body}}}
-    </div>
+    {{!-- <a href="/logout" id="logout"><i class="fas fa-cog"></i>CERRAR SESION</a> --}}
+  </div>
+  <div class="contenido">
+    {{{body}}}
   </div>
   <script src="/javascripts/jquery-3.3.1.min.js"></script>
   <script src="/javascripts/script.js"></script>

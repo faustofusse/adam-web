@@ -39,7 +39,6 @@ router.get('/imagenes', ensureAuthenticated, (req, res) => {
 router.get('/contenido', ensureAuthenticated, (req, res, next) => {
   File.find({ type: 'text/plain' }, (err, docs) => {
     if (err) throw err;
-    console.log(docs);
     res.render('contenido', { title: 'Contenido', files: docs });
   });
 });

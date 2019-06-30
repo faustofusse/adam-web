@@ -1,7 +1,7 @@
 {{#if config}}
-    <h2>Configuracion del usuario</h2>
+<h2>Configuracion del usuario</h2>
 {{else}}
-    <h2>Registrar un usuario</h2>
+<h2>Registrar un usuario</h2>
 {{/if}}
 
 <form id="usuario" action="#" method="#">
@@ -9,8 +9,14 @@
     <input type="text" id="lastName" placeholder="Apellido" value="{{user.lastName}}">
     <input type="email" id="email" placeholder="Correo electronico" value="{{user.email}}">
     {{#if config}}
-        <input type="password" id="password" placeholder="Contraseña">
-        <input type="password" id="repeatPassword" placeholder="Repetir contraseña">
+    <input type="password" id="password" placeholder="Contraseña">
+    <input type="password" id="repeatPassword" placeholder="Repetir contraseña">
     {{/if}}
-    <input type="submit" value="Aceptar">
+    <button id="submit-usuario">
+        {{#if config}}
+        <span>Guardar</span><i class="fas fa-sync"></i>
+        {{else}}
+        <span>Aceptar</span><i class="fas fa-check"></i>
+        {{/if}}
+    </button>
 </form>

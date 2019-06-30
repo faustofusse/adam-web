@@ -1,11 +1,20 @@
-<h2>Contenido</h2>
-<p></p>
+<div class="top">
+    <h2>{{title}}</h2>
+    <button id="subir-archivo"><span>Subir Archivo</span><i class="fas fa-plus"></i></button>
+</div>
+<hr>
 {{#if files}}
     {{#each files}}
-        <article>
+        <div class="archivo" id="{{fileId}}">
             <h3><b>{{name}}</b></h3>
-            <p></p>
-        </article>
-        <hr>
+            <div>
+                <button id="eliminar"><i class="fas fa-trash"></i></button>
+                <button id="slide"><i class="fas fa-chevron-down"></i></button> 
+            </div>
+            <div class="texto">
+                <hr>
+                <p></p>
+            </div>
+        </div>
     {{/each}}
 {{/if}}

@@ -1,8 +1,10 @@
 * {
     margin: 0;
+    font-family: 'Raleway', sans-serif;
 }
 
 body, html {
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,23 +17,48 @@ h1 {
     padding: .3em;
 }
 
+div.background {
+    z-index: -1;
+    top: 0;
+    left: -40%;
+    position: absolute;
+    width: 180%;
+    height: 90%;
+    background: linear-gradient(180deg, rgba(3, 227, 200, 0.8) 0%, rgba(255, 255, 255, 0) 86.2%), #2444B4;
+    border-bottom-right-radius: 200%; 
+    border-bottom-left-radius: 200%; 
+}
+
 div.container {
     padding: 2em;
-    background-color: cadetblue;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
 form {
+    margin-top: 1em;
     display: flex;
     flex-direction: column;
     justify-content: stretch;
-    width: 15em;
 }
 
 form input {
     padding: .5em;
     font-size: 1em;
     margin: .1em 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 100%), #F6F6F6;
+    border: 1px solid #000000;
+    border-radius: 91px;
+    margin-bottom: .5em;
+}
+
+form input[type="submit"] {
+    width: 50%;
+    margin:.5em auto;
+    cursor: pointer;
+}
+
+textarea:focus, input:focus{
+    outline: none;
 }
