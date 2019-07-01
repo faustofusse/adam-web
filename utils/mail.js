@@ -6,7 +6,7 @@ function sendToNuevoUsuario(user, password, callback){
     service: 'gmail',
     auth: {
       user: 'adamproyecto1@gmail.com',
-      pass: 'elmaspija'
+      pass: 'elmejorproyecto'
     }
   });
 
