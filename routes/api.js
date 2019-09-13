@@ -42,26 +42,7 @@ const upload = multer({ storage });
 // Texto todo junto
 router.get('/texto', async (req, res) => {
     File.find({ type: 'text/plain' }).then(async files => {
-        files.forEach(async file => {
-            // write file
-            writeStream = gridfs.createWriteStream({ _id: file.fileId });
-            fs.createReadStream().pipe(writeStream);
-
-            // after the write is finished
-            writeStream.on("close", function () {
-                // read file, buffering data as we go
-                readStream = gridfs.createReadStream({ filename: "test.txt" });
-
-                readStream.on("data", function (chunk) {
-                    buffer += chunk;
-                });
-
-                // dump contents to console when complete
-                readStream.on("end", function () {
-                    console.log("contents of file:\n\n", buffer);
-                });
-            });
-        });
+        res.send(files);
     });
 });
 
