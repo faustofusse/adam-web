@@ -22,6 +22,7 @@ const storage = new GridFsStorage({
     url: dbConfig.uri,
     file: (req, file) => {
         return new Promise((resolve, reject) => {
+            console.log(file);
             crypto.randomBytes(16, (err, buf) => {
                 if (err) return reject(err);
                 const filename = buf.toString('hex') + path.extname(file.originalname);
@@ -98,6 +99,7 @@ router.get('/imagenes/:id', (req, res) => {
 
 // Subir archivo  
 router.post('/archivos', upload.single('file'), (req, res) => {
+    console.log('hola')
     let description = req.body.description,
         keywords = req.body.keywords,
         file = req.file,
@@ -107,7 +109,6 @@ router.post('/archivos', upload.single('file'), (req, res) => {
     let callback = (err, file) => {
         if (err) throw err;
         res.send({ msg: 'Archivo subido correctamente.' });
-        console.log(file);
     }
     if (type === 'image/png' || type === 'image/jpg' || type === 'image/jpeg')
         Image.createImage({ description, keywords, fileId, type }, callback);
@@ -119,7 +120,8 @@ router.post('/archivos', upload.single('file'), (req, res) => {
 
 // Eliminar archivo
 router.delete('/archivos/:id', (req, res) => {
-    const _id = new ObjectID(req.params.id);
+    const _id = req.params.id;
+    console.log(_id)
     const gfs = new mongodb.GridFSBucket(dbConfig.mongoose.connection.db, { bucketName: 'uploads' });
     let callback = (err, file) => {
         if (err) throw err;
@@ -127,6 +129,7 @@ router.delete('/archivos/:id', (req, res) => {
     }
     dbConfig.mongoose.connection.db.collection(filesCollection + '.files').findOne({ _id }, (err, file) => {
         if (err) throw err;
+        if (!file) return res.send('Archivo no encontrado. No se pudo eliminar.')
         let type = file.contentType,
             schema = (type === 'image/png' || type === 'image/jpg' || type === 'image/jpeg') ? Image : (type === 'video/mp4' ? Video : File);
         console.log(type);
