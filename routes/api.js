@@ -39,6 +39,32 @@ const upload = multer({ storage });
 
 // -------- ROUTES ---------
 
+// Texto todo junto
+router.get('/texto', async (req, res) => {
+    File.find({ type: 'text/plain' }).then(async files => {
+        files.forEach(async file => {
+            // write file
+            writeStream = gridfs.createWriteStream({ _id: file.fileId });
+            fs.createReadStream().pipe(writeStream);
+
+            // after the write is finished
+            writeStream.on("close", function () {
+                // read file, buffering data as we go
+                readStream = gridfs.createReadStream({ filename: "test.txt" });
+
+                readStream.on("data", function (chunk) {
+                    buffer += chunk;
+                });
+
+                // dump contents to console when complete
+                readStream.on("end", function () {
+                    console.log("contents of file:\n\n", buffer);
+                });
+            });
+        });
+    });
+});
+
 // Listado de imagenes
 router.get('/imagenes', (req, res) => {
     dbConfig.mongoose.connection.db.collection(filesCollection + '.files')
@@ -179,12 +205,12 @@ router.post('/usuarios', (req, res, next) => {
         res.send({ errors: req.validationErrors() });
     } else {
         var newUser = new User({ name, lastName, email, password });
-        User.findOne({ email: email }, function(err, user) {
+        User.findOne({ email: email }, function (err, user) {
             if (err) throw err;
             if (user) {
                 res.send({ errors: [{ param: 'email', msg: 'El usuario ya existe' }] });
             } else {
-                User.createUser(newUser, function(err, user) {
+                User.createUser(newUser, function (err, user) {
                     if (err) throw err;
                     console.log('Usuario creado: ' + user);
                     res.send({ msg: 'Usuario creado correctamente' });
