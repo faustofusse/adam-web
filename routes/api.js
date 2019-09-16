@@ -127,8 +127,7 @@ router.post('/archivos', upload.single('file'), (req, res) => {
 
 // Eliminar archivo
 router.delete('/archivos/:id', (req, res) => {
-    const _id = req.params.id;
-    console.log(_id)
+    const _id = new ObjectID(req.params.id);
     const gfs = new mongodb.GridFSBucket(dbConfig.mongoose.connection.db, { bucketName: 'uploads' });
     let callback = (err, file) => {
         if (err) throw err;

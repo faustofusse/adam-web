@@ -49,12 +49,12 @@ $('form#archivo').submit((e) => {
     console.log('Loading....');
     upload_div_visibility(false);
     $.ajax({
-            url: '/api/archivos',
-            data: formdata,
-            processData: false,
-            contentType: false,
-            type: 'POST'
-        }).fail((err) => console.error(err))
+        url: '/api/archivos',
+        data: formdata,
+        processData: false,
+        contentType: false,
+        type: 'POST'
+    }).fail((err) => console.error(err))
         .done((response) => {
             console.log(response);
             console.log('File uploaded.');
@@ -82,11 +82,10 @@ function eliminarItem(e) {
         parent = parent.parent();
     let id = parent.attr('id');
     $.ajax({
-            url: '/api/archivos/' + id,
-            type: 'DELETE'
-        }).fail((err) => console.error(err))
+        url: '/api/archivos/' + id,
+        type: 'DELETE'
+    }).fail((err) => console.error(err))
         .done((response) => {
-            console.log('File deleted.');
             if (response.errors) return handleErrors(response.errors);
             alert(response.msg);
             console.log(response);
