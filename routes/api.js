@@ -84,6 +84,16 @@ router.get('/documentos/:id', (req, res) => {
     });
 });
 
+router.get('/videos', (req, res) => {
+    Video.find((err, videos) => {
+        if (err) throw err;
+        if (videos)
+            res.send({ videos });
+        else
+            res.send({ error: 'No hay videos' })
+    });
+});
+
 // Mostrar video (readStream de GridFS)
 router.get('/videos/:id', (req, res) => {
     const _id = new ObjectID(req.params.id);
