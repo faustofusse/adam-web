@@ -8,7 +8,7 @@
         {{#each videos}}
             <div class="video" id="{{fileId}}">
                 <button id="eliminar"><i class="fas fa-trash"></i></button>
-                <video src="/api/videos/{{fileId}}" alt="{{description}}">
+                <video src="/api/videos/{{fileId}}" alt="{{description}}" controls>
             </div>
         {{/each}}
     {{/if}}
