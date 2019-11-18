@@ -60,6 +60,14 @@ router.get('/imagenes', (req, res) => {
         });
 });
 
+router.get('/imagenes/ready', (req, res) => {
+    Image.find((err, images) => {
+        if (err) throw err;
+        if (images)
+            res.send({ imagenes: images });
+    });
+});
+
 // Archivo de texto
 router.get('/documentos/:id', (req, res) => {
     let docx = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
